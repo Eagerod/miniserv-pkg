@@ -47,6 +47,12 @@ pretty-coverage: $(COVERAGE_FILE)
 fmt:
 	@find . -type f -iname "*.go" -exec go fmt {} \;
 
+.PHONY: fmt-check
+fmt-check:
+	@if [ ! -z "$$($(MAKE) -s fmt)" ]; then \
+		exit 1; \
+	fi
+
 
 .PHONY: clean
 clean:
