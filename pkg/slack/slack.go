@@ -9,7 +9,25 @@ var AlertingChannel string = "CKE1AKEAV"
 var DefaultChannel string = "CHB1UECGJ"
 var SlackChannelHttpHeaderName string = "X-Slack-Channel-Id"
 
-type SlackTaskClient tasks.TaskClient
+type SlackTaskClient struct {
+	*tasks.TaskClient
+
+	SlackEndpoint string
+}
+
+func NewDefaultSlackTaskClient() *SlackTaskClient {
+	return &SlackTaskClient{
+		tasks.NewDefaultTaskClient(),
+		SlackBotUrl,
+	}
+}
+
+func NewSlackTaskClient(slackEndpoint, tasksEndpoint string) *SlackTaskClient {
+	return &SlackTaskClient{
+		TaskClient: tasks.NewTaskClient(tasksEndpoint),
+		SlackEndpoint: slackEndpoint,
+	}
+}
 
 func (t *SlackTaskClient) SendMessage(message string) error {
 	return t.SendMessageChannel(message, DefaultChannel)
@@ -20,14 +38,10 @@ func (t *SlackTaskClient) SendMessageAlert(message string) error {
 }
 
 func (t *SlackTaskClient) SendMessageChannel(message, channel string) error {
-	taskConfig := tasks.MakeTaskConfig(SlackBotUrl)
+	taskConfig := tasks.MakeTaskConfig(t.SlackEndpoint)
 	taskConfig.Headers["Content-Type"] = "text/plain"
 	taskConfig.Headers[SlackChannelHttpHeaderName] = channel
 	taskConfig.Content = message
 
-	return t.postTask(taskConfig)
-}
-
-func (t *SlackTaskClient) postTask(config tasks.TaskConfig) error {
-	return (*tasks.TaskClient)(t).PostTask(config)
+	return t.TaskClient.PostTask(taskConfig)
 }
