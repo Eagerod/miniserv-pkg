@@ -16,12 +16,14 @@ import (
 	"github.com/Eagerod/miniserv-pkg/pkg/tasks"
 )
 
-func AssertTasksGenerated(t *testing.T, tcs []tasks.TaskConfig) (*httptest.Server, func()int) {
+func ExpectTasksPosted(t *testing.T, tcs []tasks.TaskConfig) (*httptest.Server, func() int) {
 	remainingCalls := func() int {
 		return len(tcs)
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.NotEqual(t, 0, len(tcs))
+
 		assert.Equal(t, "/", r.URL.Path)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 

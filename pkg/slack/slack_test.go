@@ -17,9 +17,9 @@ func TestSendMessage(t *testing.T) {
 	expectedCall := tasks.MakeTaskConfig("https://slackbot.internal.aleemhaji.com/message")
 	expectedCall.Content = "some message content"
 	expectedCall.Headers["Content-Type"] = "text/plain"
-	expectedCall.Headers["X-SLACK-CHANNEL-ID"] = DefaultChannel
+	expectedCall.Headers[SlackChannelHttpHeaderName] = DefaultChannel
 
-	server, rc := tasks_test.AssertTasksGenerated(t, []tasks.TaskConfig{expectedCall})
+	server, rc := tasks_test.ExpectTasksPosted(t, []tasks.TaskConfig{expectedCall})
 	defer server.Close()
 
 	slackTaskClient := (*SlackTaskClient)(tasks.NewTaskClient(server.URL))
