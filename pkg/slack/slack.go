@@ -24,7 +24,7 @@ func NewDefaultSlackTaskClient() *SlackTaskClient {
 
 func NewSlackTaskClient(slackEndpoint, tasksEndpoint string) *SlackTaskClient {
 	return &SlackTaskClient{
-		TaskClient: tasks.NewTaskClient(tasksEndpoint),
+		TaskClient:    tasks.NewTaskClient(tasksEndpoint),
 		SlackEndpoint: slackEndpoint,
 	}
 }
