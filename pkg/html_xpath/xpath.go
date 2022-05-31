@@ -12,12 +12,12 @@ import (
 
 func TextAttributeFromQueryUrl(aUrl, xpath, attribute string) ([]string, error) {
 	rv := []string{}
-	
+
 	theUrl, err := url.Parse(aUrl)
 	if err != nil {
 		return rv, err
 	}
-	
+
 	var rootNode *html.Node
 	if theUrl.Scheme == "file" || theUrl.Scheme == "" {
 		rootNode, err = htmlquery.LoadDoc(theUrl.Path)
